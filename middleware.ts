@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(req: Request) {
+  const regex = new RegExp('/api/*');
+
+  if (regex.test(req.url)) {
+  }
+
   console.log('middleware');
 
   console.log(req.method);
