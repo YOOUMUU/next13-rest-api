@@ -1,18 +1,28 @@
 import { NextResponse } from 'next/server';
 
-export function middleware(req: Request) {
-  const regex = new RegExp('/api/*');
+const allowedOrigins =
+  process.env.NODE_ENV === 'production'
+    ? ['https://example.com', 'https://www.example.com']
+    : ['http://localhost:3000'];
 
-  if (regex.test(req.url)) {
+export function middleware(req: Request) {
+  const origin = req.headers.get('origin');
+  console.log(origin);
+
+  if (origin && !allowedOrigins.includes(origin)) {
+    return new NextResponse(null, {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    });
   }
 
   console.log('middleware');
 
   console.log(req.method);
   console.log(req.url);
-
-  const origin = req.headers.get('origin');
-  console.log(origin);
 
   return NextResponse.next();
 }
